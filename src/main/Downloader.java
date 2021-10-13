@@ -17,12 +17,11 @@ public class Downloader {
 			for(int i = firstNo; i <= endNo; i++) {
 				Document doc = Jsoup.connect(addr+i).get();
 				Elements imgs = doc.select("img[src~=image-comic]");
-				//src 속성에 imgcomic 이라는 글자를 포함하는 모든 img태그를 가져옴.	
 				File saveFile = new File(target + File.separator +i);
 				saveFile.mkdir();
 				
 				for(int j = 0; j < imgs.size(); j++) {
-					String src = imgs.get(j).attr("src"); //src속성만 따로 가져옴.
+					String src = imgs.get(j).attr("src");
 					
 					imgDown(addr, target, src, j+1, i);
 					
@@ -37,24 +36,21 @@ public class Downloader {
 	private void imgDown(String addr, String target, String src, int page, int no) {
 		
 		try {
-			int idx = src.lastIndexOf("."); //url에서 마지막 .의 위치 가져오기
-			String ext = src.substring(idx); //.의 위치부터 글자를 잘라 확장자 가져오기
+			int idx = src.lastIndexOf("."); 
+			String ext = src.substring(idx); 
 			
 			File saveFile = new File(target + File.separator +no+ File.separator + page + ext);
-			//저장할 파일 생성자를 만들고
 			FileOutputStream fos = new FileOutputStream(saveFile);
-			//해당 파일에 대한 아웃 스트림을 열어준다.
 			
 			HttpURLConnection conn = (HttpURLConnection)new URL(src).openConnection();
-			conn.setConnectTimeout(40000); //최대 한 파일당 40초까지 기다려줌
+			conn.setConnectTimeout(40000); 
 			conn.setRequestMethod("GET");
 			conn.setRequestProperty("Referer", addr);
-			//이 속성을 안해주면 네이버에서는 이전에 웹툰을 보다가 접근한 것이 아니라고 판단하고 요청을 거부함.
 			conn.setRequestProperty("User-Agent", "Mozilla/5.0");
 			InputStream in = conn.getInputStream();
 			
-			byte[] buffer = new byte[1024*1024]; //1kb 크기로 버퍼 설정해서 받음.
-			int len = 0; //읽어온 바이트 수
+			byte[] buffer = new byte[1024*1024];
+			int len = 0; 
 			while(true) {
 				len = in.read(buffer);
 				if(len <= 0) {
